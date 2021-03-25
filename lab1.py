@@ -97,9 +97,11 @@ board_censor(board2)
 #----------------------------------------------------------
 p1_points = 0
 p2_points = 0
+player=1
 
 
-while count(board2) > 2:
+while count(board2) > 0:
+    print("Now it's playing Player",player)
     move1_p1_a = int(input(': '))
     move1_p1_b = int(input(': '))
     while valid(move1_p1_a,move1_p1_b,board2) == False:
@@ -118,8 +120,18 @@ while count(board2) > 2:
     
     if p1_card1 == p1_card2:
         print("It's a match, keep playing!")
-        p1_points += 1
+        if player==1:
+            p1_points += 1
+        else:
+            p2_points += 1
     else:
         print("Wrong")
         clean(move1_p1_a,move1_p1_b,move2_p1_a,move2_p1_b)
         board_censor(board2)
+        player = change_player(player)
+if p1_points > p2_points:
+    print("The winner is Player 1 with", p1_points, "pairs")
+elif p1_points < p2_points:
+    print("The winner is Player 2 with", p2_points, "pairs")
+else:
+    print("It´s a tie")

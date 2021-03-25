@@ -46,7 +46,12 @@ def board2(board):
 
 def coord(a,b, board2, board):
     board2[a][b] = board[a][b]
-    return print(board2)
+    board_censor(board2)
+    return board[a][b]
+
+def clean(a1,b1,a2,b2):
+    board2[a1][b1]="?"
+    board2[a2][b2]="?"
 
 def print_board(board): 
     for i in board:
@@ -54,6 +59,28 @@ def print_board(board):
             print(j," ",end="")
         print()
     return board
+
+def change_player(player):
+    if player==1:
+        player=2
+    else:
+        player=1
+    return player
+
+def valid(a,b,board):
+    if a<0 or a>len(board) or b<0 or b>len(board[0]) or board[a][b] != '?':
+        print("Not valid")
+        return False
+    
+    return True
+
+def count(board):
+    counter = 0
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+           if board[i][j] == '?':
+              counter += 1
+    return counter
 
 cartas = int(input('numero de cartas: '))
 card_list = numbers(cartas)
@@ -64,4 +91,35 @@ print('board')
 print_board(board)
 print('censored board')
 board_censor(board2)
-coord(0,0,board2,board)
+
+
+
+#----------------------------------------------------------
+p1_points = 0
+p2_points = 0
+
+
+while count(board2) > 2:
+    move1_p1_a = int(input(': '))
+    move1_p1_b = int(input(': '))
+    while valid(move1_p1_a,move1_p1_b,board2) == False:
+            move1_p1_a = int(input(': '))
+            move1_p1_b = int(input(': '))
+    
+    p1_card1 = coord(move1_p1_a,move1_p1_b, board2, board)
+    
+    move2_p1_a = int(input(': '))
+    move2_p1_b = int(input(': '))
+    while valid(move2_p1_a,move2_p1_b,board2) == False:
+            move2_p1_a = int(input(': '))
+            move2_p1_b = int(input(': '))
+    
+    p1_card2 =coord(move2_p1_a,move2_p1_b, board2, board)
+    
+    if p1_card1 == p1_card2:
+        print("It's a match, keep playing!")
+        p1_points += 1
+    else:
+        print("Wrong")
+        clean(move1_p1_a,move1_p1_b,move2_p1_a,move2_p1_b)
+        board_censor(board2)

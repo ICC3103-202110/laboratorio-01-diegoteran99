@@ -20,17 +20,15 @@ def board(card_list):
     return board
 
 def board_censor(board):
-    abc = "abcdefghijklmnopqrstuvwxyz"
     print("   |",end="")
     for j in range(len(board[0])):
-        print('',abc[j],"|",end="")
+        print('',j,"|",end="")
     print()
-    abc_num = 0
+    print()
     for i in range(len(board)):
-        print(abc[abc_num]," |",end="")
+        print(i," |",end="")
         for j in range(len(board[i])):
             print('',board[i][j],"|",end="")
-        abc_num += 1
         print()
     return board
 
@@ -43,19 +41,19 @@ def covered_board(board):
         covered_board.append(row2)
     return covered_board
 
-def coord(a,b, covered_board, board):
-    covered_board[a][b] = board[a][b]
+def coord(C,R,covered_board,board):
+    covered_board[C][R] = board[C][R]
     board_censor(covered_board)
-    return board[a][b]
+    return board[C][R]
 
-def clean(a1,b1,a2,b2):
-    covered_board[a1][b1]="▓"
-    covered_board[a2][b2]="▓"
+def clean(first_C,first_R,second_C,second_R):
+    covered_board[first_C][first_R]="▓"
+    covered_board[second_C][second_R]="▓"
 
-def erase_cards(a1,b1,a2,b2):
-    covered_board[a1][b1]=" "
-    covered_board[a2][b2]=" "
-
+def erase_cards(first_C,first_R,second_C,second_R):
+    covered_board[first_C][first_R]=" "
+    covered_board[second_C][second_R]=" "
+    
 def print_board(board): 
     for i in board:
         for j in i:
@@ -70,9 +68,9 @@ def change_player(player):
         player=1
     return player
 
-def valid(a,b,board):
-    if a<0 or a>len(board) or b<0 or b>len(board[0]) or board[a][b] != "▓" or board[a][b] == " ":
-        print("Not valid")
+def valid(C,R,board):
+    if C<0 or C>1 or R<0 or C>len(board) or R<0 or R>len(board[0]) or board[C][R]!="▓":
+        print("Not valid\n")
         return False
     return True
 
@@ -81,17 +79,18 @@ def count(board):
     for i in range(len(board)):
         for j in range(len(board[i])):
            if board[i][j] == "▓":
-              counter += 1
+               counter += 1
     return counter
 
 cards = int(input("Select the number of cards: "))
+print()
 card_list = numbers(cards)
 board = board(card_list)
 covered_board = covered_board(board)
-print(covered_board)
-print("board")
+#print(covered_board)
+#print("board")
 print_board(board)
-print("censored board")
+#print("censored board")
 board_censor(covered_board)
 
 #-------------------------------------------------------------------------------
@@ -100,35 +99,37 @@ p2_points = 0
 player=1
 
 while count(covered_board) > 0:
-    print("Now it's playing Player",player)
-    move1_p1_a = int(input(": "))
-    move1_p1_b = int(input(": "))
-    while valid(move1_p1_a,move1_p1_b,covered_board) == False:
-            move1_p1_a = int(input(": "))
-            move1_p1_b = int(input(": "))
-    
-    p1_card1 = coord(move1_p1_a,move1_p1_b, covered_board, board)
+    print("\nNow it's playing Player",player)
+    print()
+    move1_C = int(input("Select a column (0 or 1): "))
+    move1_R = int(input("Select a row (0,1,2,3,etc): "))
+    print()
+    while valid(move1_C,move1_R,covered_board) == False:
+        move1_C = int(input("Select a column (0 or 1): "))
+        move1_R = int(input("Select a row (0,1,2,3,etc): "))
+        print()
+    card1 = coord(move1_C, move1_R, covered_board, board)
+    print()
+    move2_C = int(input("Select a column (0 or 1): "))
+    move2_R = int(input("Select a row (0,1,2,3,etc): "))
+    print()
+    while valid(move2_C,move2_R,covered_board) == False:
+        move2_C = int(input("Select a column (0 or 1): "))
+        move2_R = int(input("Select a row (0,1,2,3,etc): "))
+        print()
+    card2 =coord(move2_C,move2_R, covered_board, board)
     print()
     
-    move2_p1_a = int(input(": "))
-    move2_p1_b = int(input(": "))
-    while valid(move2_p1_a,move2_p1_b,covered_board) == False:
-            move2_p1_a = int(input(": "))
-            move2_p1_b = int(input(": "))
-    
-    p1_card2 =coord(move2_p1_a,move2_p1_b, covered_board, board)
-    print()
-    
-    if p1_card1 == p1_card2:
+    if card1 == card2:
         print("It's correct, keep playing!")
-        erase_cards(move1_p1_a,move1_p1_b,move2_p1_a,move2_p1_b)
+        erase_cards(move1_C,move1_R,move2_C,move2_R)
         if player==1:
             p1_points += 1
         else:
             p2_points += 1
     else:
         print("Wrong\n")
-        clean(move1_p1_a,move1_p1_b,move2_p1_a,move2_p1_b)
+        clean(move1_C,move1_R,move2_C,move2_R)
         board_censor(covered_board)
         player = change_player(player)
 
